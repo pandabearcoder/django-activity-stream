@@ -131,7 +131,7 @@ def action_handler(verb, **kwargs):
         'timestamp': kwargs.pop('timestamp', now()),
     }
 
-    if not app_settings.USE_JSONFIELD:
+    if not app_settings.USE_JSONFIELD and kwargs:
         newaction_kwargs.update(kwargs)
 
     newaction = apps.get_model(*app_settings.ACTION_MODEL)(**newaction_kwargs)
