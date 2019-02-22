@@ -9,7 +9,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timesince import timesince as djtimesince
 from django.contrib.contenttypes.models import ContentType
 
-from actstream import settings as app_settings
+from actstream.utils import get_action_model
+
 
 try:
     from django.urls import reverse
@@ -185,7 +186,7 @@ class Action(models.Model):
 
 
 # convenient accessors
-ACTION_MODEL = apps.get_model(*app_settings.ACTION_MODEL.split('.'))
+ACTION_MODEL = get_action_model()
 actor_stream = ACTION_MODEL.objects.actor
 action_object_stream = ACTION_MODEL.objects.action_object
 target_stream = ACTION_MODEL.objects.target

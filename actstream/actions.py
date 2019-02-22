@@ -3,7 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.six import text_type
 from django.contrib.contenttypes.models import ContentType
 
-from actstream import settings as app_settings
+from actstream import settings
+from actstream.utils import get_action_model
 from actstream.signals import action
 from actstream.registry import check
 
@@ -131,10 +132,11 @@ def action_handler(verb, **kwargs):
         'timestamp': kwargs.pop('timestamp', now()),
     }
 
-    if not app_settings.USE_JSONFIELD and kwargs:
+    if not settings.USE_JSONFIELD and kwargs:
         newaction_kwargs.update(kwargs)
 
-    newaction = apps.get_model(*app_settings.ACTION_MODEL)(**newaction_kwargs)
+    ACTION_MODEL = get_action_model()
+    newaction = ACTION_MODEL(**newaction_kwargs)
 
     for opt in ('target', 'action_object'):
         obj = kwargs.pop(opt, None)
@@ -143,7 +145,7 @@ def action_handler(verb, **kwargs):
             setattr(newaction, '%s_object_id' % opt, obj.pk)
             setattr(newaction, '%s_content_type' % opt,
                     ContentType.objects.get_for_model(obj))
-    if app_settings.USE_JSONFIELD and len(kwargs):
+    if settings.USE_JSONFIELD and len(kwargs):
         newaction.data = kwargs
     newaction.save(force_insert=True)
     return newaction
