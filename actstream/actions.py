@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.six import text_type
 from django.contrib.contenttypes.models import ContentType
 
-from actstream import settings
+from actstream import settings as app_settings
 from actstream.signals import action
 from actstream.registry import check
 
@@ -122,14 +122,19 @@ def action_handler(verb, **kwargs):
     if hasattr(verb, '_proxy____args'):
         verb = verb._proxy____args[0]
 
-    newaction = apps.get_model('actstream', 'action')(
-        actor_content_type=ContentType.objects.get_for_model(actor),
-        actor_object_id=actor.pk,
-        verb=text_type(verb),
-        public=bool(kwargs.pop('public', True)),
-        description=kwargs.pop('description', None),
-        timestamp=kwargs.pop('timestamp', now())
-    )
+    newaction_kwargs = {
+        'actor_content_type': ContentType.objects.get_for_model(actor),
+        'actor_object_id': actor.pk,
+        'verb': text_type(verb),
+        'public': bool(kwargs.pop('public', True)),
+        'description': kwargs.pop('description', None),
+        'timestamp': kwargs.pop('timestamp', now()),
+    }
+
+    if not app_settings.USE_JSONFIELD:
+        newaction_kwargs.update(kwargs)
+
+    newaction = apps.get_model(*app_settings.ACTION_MODEL)(**newaction_kwargs)
 
     for opt in ('target', 'action_object'):
         obj = kwargs.pop(opt, None)
@@ -138,7 +143,7 @@ def action_handler(verb, **kwargs):
             setattr(newaction, '%s_object_id' % opt, obj.pk)
             setattr(newaction, '%s_content_type' % opt,
                     ContentType.objects.get_for_model(obj))
-    if settings.USE_JSONFIELD and len(kwargs):
+    if app_settings.USE_JSONFIELD and len(kwargs):
         newaction.data = kwargs
     newaction.save(force_insert=True)
     return newaction

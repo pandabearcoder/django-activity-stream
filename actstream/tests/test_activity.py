@@ -11,11 +11,13 @@ try:
 except ImportError:
     from django.core.urlresolvers import reverse
 
-from actstream.models import (Action, Follow, model_stream, user_stream,
+from actstream.models import (ACTION_MODEL, Follow, model_stream, user_stream,
                               actor_stream, following, followers)
 from actstream.actions import follow, unfollow
 from actstream.signals import action
 from actstream.tests.base import DataTestCase, render
+
+Action = ACTION_MODEL
 
 
 class ActivityTestCase(DataTestCase):

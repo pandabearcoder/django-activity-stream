@@ -124,7 +124,7 @@ def detail(request, action_id):
         request,
         'actstream/detail.html',
         {
-            'action': get_object_or_404(models.Action, pk=action_id)
+            'action': get_object_or_404(models.ACTION_MODEL, pk=action_id)
         }
     )
 

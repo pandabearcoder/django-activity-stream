@@ -7,9 +7,10 @@ try:
 except ImportError:
     from django.urls import reverse
 
-from actstream.models import Follow, Action
+from actstream.models import Follow, ACTION_MODEL
 
 
+Action = ACTION_MODEL
 register = Library()
 
 

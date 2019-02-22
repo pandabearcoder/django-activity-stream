@@ -17,7 +17,10 @@ try:
 except ImportError:
     from django.urls import reverse
 
-from actstream.models import Action, model_stream, user_stream, any_stream
+from actstream.models import model_stream, user_stream, any_stream, ACTION_MODEL
+
+
+Action = ACTION_MODEL
 
 
 class AbstractActivityStream(object):

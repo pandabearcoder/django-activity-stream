@@ -17,10 +17,14 @@ try:
 except ImportError:
     from django.urls import reverse
 
-from actstream.models import Action, Follow
+from actstream.models import Follow
 from actstream.registry import register, unregister
 from actstream.actions import follow
 from actstream.signals import action
+from actstream.settings import ACTION_MODEL
+
+
+Action = ACTION_MODEL
 
 
 def render(src, **ctx):

@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.apps import apps
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
@@ -7,6 +8,8 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timesince import timesince as djtimesince
 from django.contrib.contenttypes.models import ContentType
+
+from actstream import settings as app_settings
 
 try:
     from django.urls import reverse
@@ -182,11 +185,12 @@ class Action(models.Model):
 
 
 # convenient accessors
-actor_stream = Action.objects.actor
-action_object_stream = Action.objects.action_object
-target_stream = Action.objects.target
-user_stream = Action.objects.user
-model_stream = Action.objects.model_actions
-any_stream = Action.objects.any
+ACTION_MODEL = apps.get_model(*app_settings.ACTION_MODEL.split('.'))
+actor_stream = ACTION_MODEL.objects.actor
+action_object_stream = ACTION_MODEL.objects.action_object
+target_stream = ACTION_MODEL.objects.target
+user_stream = ACTION_MODEL.objects.user
+model_stream = ACTION_MODEL.objects.model_actions
+any_stream = ACTION_MODEL.objects.any
 followers = Follow.objects.followers
 following = Follow.objects.following

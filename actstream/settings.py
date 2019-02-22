@@ -23,3 +23,5 @@ def get_action_manager():
 FETCH_RELATIONS = SETTINGS.get('FETCH_RELATIONS', True)
 
 USE_JSONFIELD = SETTINGS.get('USE_JSONFIELD', False)
+
+ACTION_MODEL = SETTINGS.get('ACTION_MODEL', 'acstream.Action')

@@ -25,5 +25,5 @@ class FollowAdmin(ModelAdmin):
     raw_id_fields = ('user', 'content_type')
 
 
-admin.site.register(models.Action, ActionAdmin)
+admin.site.register(models.ACTION_MODEL, ActionAdmin)
 admin.site.register(models.Follow, FollowAdmin)
