@@ -127,6 +127,11 @@ class Action(models.Model):
 
     public = models.BooleanField(default=True, db_index=True)
 
+    title = models.CharField(max_length=256, blank=True)
+    context_message = models.CharField(max_length=256, blank=True)
+    primary_url = models.CharField(max_length=256, blank=True)
+    secondary_url = models.CharField(max_length=256, blank=True)
+
     objects = actstream_settings.get_action_manager()
 
     class Meta:
