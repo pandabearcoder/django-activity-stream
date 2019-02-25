@@ -4,6 +4,7 @@ from django.utils.six import text_type
 from django.contrib.contenttypes.models import ContentType
 
 from actstream import settings
+from actstream.utils import get_action_model
 from actstream.signals import action
 from actstream.registry import check
 
@@ -122,14 +123,20 @@ def action_handler(verb, **kwargs):
     if hasattr(verb, '_proxy____args'):
         verb = verb._proxy____args[0]
 
-    newaction = apps.get_model('actstream', 'action')(
-        actor_content_type=ContentType.objects.get_for_model(actor),
-        actor_object_id=actor.pk,
-        verb=text_type(verb),
-        public=bool(kwargs.pop('public', True)),
-        description=kwargs.pop('description', None),
-        timestamp=kwargs.pop('timestamp', now())
-    )
+    newaction_kwargs = {
+        'actor_content_type': ContentType.objects.get_for_model(actor),
+        'actor_object_id': actor.pk,
+        'verb': text_type(verb),
+        'public': bool(kwargs.pop('public', True)),
+        'description': kwargs.pop('description', None),
+        'timestamp': kwargs.pop('timestamp', now()),
+    }
+
+    if not settings.USE_JSONFIELD and kwargs:
+        newaction_kwargs.update(kwargs)
+
+    ACTION_MODEL = get_action_model()
+    newaction = ACTION_MODEL(**newaction_kwargs)
 
     for opt in ('target', 'action_object'):
         obj = kwargs.pop(opt, None)

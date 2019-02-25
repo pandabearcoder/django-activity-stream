@@ -11,11 +11,12 @@ try:
 except ImportError:
     from django.core.urlresolvers import reverse
 
-from actstream.models import (Action, Follow, model_stream, user_stream,
+from actstream.models import (Follow, model_stream, user_stream,
                               actor_stream, following, followers)
 from actstream.actions import follow, unfollow
 from actstream.signals import action
 from actstream.tests.base import DataTestCase, render
+from actstream.utils import get_action_model
 
 
 class ActivityTestCase(DataTestCase):
@@ -257,6 +258,7 @@ class ActivityTestCase(DataTestCase):
         self.assertEqual(render(src, user=self.user1, group=self.another_group, verb='liking'), '')
 
     def test_none_returns_an_empty_queryset(self):
+        Action = get_action_model()
         qs = Action.objects.none()
         self.assertFalse(qs.exists())
         self.assertEqual(qs.count(), 0)
@@ -271,6 +273,7 @@ class ActivityTestCase(DataTestCase):
             lang = get_language()
             activate('fr')
             verb = _('English')
+            Action = get_action_model()
 
             self.assertEqual(verb, 'Anglais')
             action.send(self.user1, verb=verb, action_object=self.comment,

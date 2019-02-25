@@ -17,7 +17,8 @@ try:
 except ImportError:
     from django.urls import reverse
 
-from actstream.models import Action, model_stream, user_stream, any_stream
+from actstream.models import model_stream, user_stream, any_stream
+from actstream.utils import get_action_model
 
 
 class AbstractActivityStream(object):
@@ -265,6 +266,7 @@ class CustomStreamMixin(object):
         return
 
     def get_stream(self):
+        Action = get_action_model()
         return getattr(Action.objects, self.name)
 
     def items(self, *args, **kwargs):

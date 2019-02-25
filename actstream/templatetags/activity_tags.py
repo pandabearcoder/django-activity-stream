@@ -7,7 +7,8 @@ try:
 except ImportError:
     from django.urls import reverse
 
-from actstream.models import Follow, Action
+from actstream.models import Follow
+from actstream.utils import get_action_model
 
 
 register = Library()
@@ -254,6 +255,8 @@ def activity_stream(context, stream_type, *args, **kwargs):
             {% display_action action %}
         {% endfor %}
     """
+    Action = get_action_model()
+
     if stream_type == 'model':
         stream_type = 'model_actions'
     if not hasattr(Action.objects, stream_type):
