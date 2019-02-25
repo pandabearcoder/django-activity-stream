@@ -186,12 +186,11 @@ class Action(models.Model):
 
 
 # convenient accessors
-ACTION_MODEL = get_action_model()
-actor_stream = ACTION_MODEL.objects.actor
-action_object_stream = ACTION_MODEL.objects.action_object
-target_stream = ACTION_MODEL.objects.target
-user_stream = ACTION_MODEL.objects.user
-model_stream = ACTION_MODEL.objects.model_actions
-any_stream = ACTION_MODEL.objects.any
+actor_stream = Action.objects.actor
+action_object_stream = Action.objects.action_object
+target_stream = Action.objects.target
+user_stream = Action.objects.user
+model_stream = Action.objects.model_actions
+any_stream = Action.objects.any
 followers = Follow.objects.followers
 following = Follow.objects.following
