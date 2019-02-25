@@ -21,10 +21,7 @@ from actstream.models import Follow
 from actstream.registry import register, unregister
 from actstream.actions import follow
 from actstream.signals import action
-from actstream.settings import ACTION_MODEL
-
-
-Action = ACTION_MODEL
+from actstream.utils import get_action_model
 
 
 def render(src, **ctx):
@@ -72,6 +69,7 @@ class ActivityBaseTestCase(TestCase):
             model = apps.get_model(*model.split('.'))
             unregister(model)
             model.objects.all().delete()
+        Action = get_action_model()
         Action.objects.all().delete()
         Follow.objects.all().delete()
         self.User.objects.all().delete()
