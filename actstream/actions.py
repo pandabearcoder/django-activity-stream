@@ -132,20 +132,26 @@ def action_handler(verb, **kwargs):
         'timestamp': kwargs.pop('timestamp', now()),
     }
 
+    generic_fields = ('target', 'action_object')
+
     if not settings.USE_JSONFIELD and kwargs:
-        newaction_kwargs.update(kwargs)
+        for key, value in kwargs.items():
+            if key not in generic_fields:
+                newaction_kwargs[key] = value
 
     ACTION_MODEL = get_action_model()
     newaction = ACTION_MODEL(**newaction_kwargs)
 
-    for opt in ('target', 'action_object'):
+    for opt in generic_fields:
         obj = kwargs.pop(opt, None)
         if obj is not None:
             check(obj)
             setattr(newaction, '%s_object_id' % opt, obj.pk)
             setattr(newaction, '%s_content_type' % opt,
                     ContentType.objects.get_for_model(obj))
+
     if settings.USE_JSONFIELD and len(kwargs):
         newaction.data = kwargs
+
     newaction.save(force_insert=True)
     return newaction
