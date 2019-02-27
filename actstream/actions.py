@@ -128,7 +128,11 @@ def action_handler(verb, **kwargs):
         verb=text_type(verb),
         public=bool(kwargs.pop('public', True)),
         description=kwargs.pop('description', None),
-        timestamp=kwargs.pop('timestamp', now())
+        timestamp=kwargs.pop('timestamp', now()),
+        title=kwargs.pop('title', ''),
+        context_message=kwargs.pop('context_message', ''),
+        primary_url=kwargs.pop('primary_url', ''),
+        secondary_url=kwargs.pop('secondary_url', ''),
     )
 
     for opt in ('target', 'action_object'):
